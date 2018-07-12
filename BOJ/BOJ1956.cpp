@@ -22,10 +22,8 @@ int main()
 	}
 	for (int k = 1; k <= v; ++k) {
 		for (int i = 1; i <= v; ++i) {
-			for (int j = 1; j <= v; ++j) {
-				if (table[i][j] > table[i][k] + table[k][j])
-					table[i][j] = table[i][k] + table[k][j];
-			}
+			for (int j = 1; j <= v; ++j) 
+				table[i][j] = min(table[i][j], table[i][k] + table[k][j]);
 		}
 	}
 	int ans = INF;
@@ -33,6 +31,6 @@ int main()
 		ans = min(ans,table[i][i]);
 	}
 	if (ans == INF)
-		printf("-1");
-	else printf("%d", ans);
+		ans = -1;
+	printf("%d", ans);
 }
