@@ -1,3 +1,11 @@
+/**
+Gee를 판별하기 위해선 음의 사이클을 판별한 후 
+음의 사이클로 부터 목적지까지 갈 수 있는지 확인하여야 한다.
+이러한 작업이 없을 시 정확한 Gee를 찾을 수 없음.
+Cycle이 판별되었을 때 포함된 점들로부터 도착지에 갈 수 있는지 확인한다.
+갈 수 있다면 Gee, 갈 수 없으면 벌 수 있는 돈의 최대값, 
+도착지로 어느 점도 갈 수 없으면 gg
+*/
 #include<cstdio>
 #include<vector>
 #include<queue>
@@ -74,8 +82,7 @@ int main()
 		if (chk)
 			break;
 	}
-
 	if (dist[ep] == INF) printf("gg");
-	else if (chk) printf("gee");
+	else if (chk) printf("Gee");
 	else printf("%lld", dist[ep]);
 }
