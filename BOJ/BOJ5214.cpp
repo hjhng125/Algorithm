@@ -30,12 +30,10 @@ int main()
 		int cur = q.front().second;
 		int cost = q.front().first;
 		q.pop();
-		if (dist_table[cur] < cost) continue;
 		for (int next : adj[cur]) {
-			int ncost = cost + 1;
-			if (dist_table[next] > ncost) {
-				dist_table[next] = ncost;
-				q.push(make_pair(ncost, next));
+			if (dist_table[next] > cost + 1) {
+				dist_table[next] = cost + 1;
+				q.push(make_pair(cost + 1, next));
 			}
 		}
 	}
