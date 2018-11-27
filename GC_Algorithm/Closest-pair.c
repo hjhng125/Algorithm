@@ -22,10 +22,10 @@ float minNum(float a, float b) {
 float dist(Node a, Node b) {
 	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
 }
-float bruteForce(n) {
+float bruteForce(int size) {
 	float min = FLT_MAX;
-	for (int i = 1; i <= n; ++i) 
-		for (int j = i + 1; j <= n; ++j) 
+	for (int i = 1; i <= size; ++i)
+		for (int j = i + 1; j <= size; ++j)
 			if (dist(node[i], node[j]) < min)
 				min = dist(node[i], node[j]);
 	return min;
@@ -33,47 +33,47 @@ float bruteForce(n) {
 float stripClosest(Node strip[], int size, float d) {
 	float min = d;
 
-	for (int i = 1; i <= n; ++i) {
-		for (int j = i + 1; j <= size && (strip[j].y - strip[i].y) < min; j++) {
+	for (int i = 1; i < size; ++i) {
+		for (int j = i + 1; j < size && (strip[j].y - strip[i].y) < min; j++) {
 			if (dist(strip[i], strip[j]) < min)
 				min = dist(strip[i], strip[j]);
 		}
 	}
 	return min;
 }
-float closest_pair(Node nx[], Node ny[], int n) {
-	if (n <= 3) return bruteForce(n);
-	int mid = n / 2;
-	Node midnode = node[mid];
+float closest_pair(Node nx[], Node ny[], int size) {
+	if (size <= 3) return bruteForce(size);
+	int mid = (size + 1) / 2;
+	Node midnode = nx[mid];
 
 	Node* nyl;
 	Node* nyr;
-	nyl = (Node*)malloc(sizeof(Node) * ((mid + 1) + 1));
-	nyr = (Node*)malloc(sizeof(Node) * ((n - mid - 1) + 1));
+	nyl = (Node*)malloc(sizeof(Node) * (mid + 1));
+	nyr = (Node*)malloc(sizeof(Node) * (size - mid + 1));
 	int li = 1, ri = 1;
-	for (int i = 1; i <= n; ++i) {
-		if (ny[i].x <= midnode.x) 
+	for (int i = 1; i <= size; ++i) {
+		if (ny[i].x <= midnode.x)
 			nyl[li++] = ny[i];
-		else 
+		else
 			nyr[ri++] = ny[i];
 	}
 	float dl = closest_pair(nx, nyl, mid);
-	float dr = closest_pair(nx + mid, nyr, n - mid);
+	float dr = closest_pair(nx + mid, nyr, size - mid);
 
 	float minD = minNum(dl, dr);
 
 	Node* strip;
 
-	strip = (Node*)malloc(sizeof(Node) * (n + 1));
-	int j = 0;
-	for (int i = 1; i <= n; ++i) {
+	strip = (Node*)malloc(sizeof(Node) * (size + 1));
+	int j = 1;
+	for (int i = 1; i <= size; ++i) {
 		if (abs(nx[i].x - midnode.x) < minD)
-			strip[j] = ny[i], j++;
+			strip[j] = nx[i], j++;
 	}
 	return minNum(minD, stripClosest(strip, j, minD));
 }
 
-float closest(int n) {
+float closest() {
 	Node* nx, *ny;
 	nx = (Node*)malloc(sizeof(Node) * (n + 1));
 	ny = (Node*)malloc(sizeof(Node) * (n + 1));
@@ -97,16 +97,8 @@ int main()
 	for (int i = 1; i <= n; ++i) {
 		scanf("%d %d", &node[i].x, &node[i].y);
 	}
-	float ans = closest(n + 1);
-	if(ans < 10000)
+	float ans = closest();
+	if (ans < 10000)
 		printf("%.2f\n", ans);
 	else printf("Infinity\n");
 }
-/*
-5
-0 2
-6 67
-39 107
-43 71
-189 140
-*/
