@@ -1,104 +1,67 @@
 #include<stdio.h>
-#include<stdlib.h>
 #include<math.h>
+#include<stdlib.h>
 #include<float.h>
-#include<stdbool.h>
 
-typedef struct NODE {
-	int x, y;
-}Node;
-Node* node;
-int n;
-float distance = 0;
-bool compareX(Node a, Node b) {
-	return a.x < b.x;
-}
-bool compareY(Node a, Node b) {
-	return a.y < b.y;
-}
-float minNum(float a, float b) {
-	return (a < b) ? a : b;
-}
-float dist(Node a, Node b) {
-	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
-}
-float bruteForce(int size) {
-	float min = FLT_MAX;
-	for (int i = 1; i <= size; ++i)
-		for (int j = i + 1; j <= size; ++j)
-			if (dist(node[i], node[j]) < min)
-				min = dist(node[i], node[j]);
-	return min;
-}
-float stripClosest(Node strip[], int size, float d) {
-	float min = d;
+typedef struct POINT {
+	float x, y;
+}Point;
 
-	for (int i = 1; i < size; ++i) {
-		for (int j = i + 1; j < size && (strip[j].y - strip[i].y) < min; j++) {
-			if (dist(strip[i], strip[j]) < min)
-				min = dist(strip[i], strip[j]);
+Point p[5] = { {0,2},{6,67},{39,107},{43,71},{189,140} }, strip[5], nx[5];
+int n = 5;
+bool compareX(Point p1, Point p2) {
+	return p1.x < p2.x;
+}
+
+float dist(Point p1, Point p2) {
+	return sqrt(pow(p1.x - p2.x) - pow(p1.y - p2.y));
+}
+
+float bruteforce(Point p[]) {
+	float minD = FLT_MAX;
+	for (int i = 0; i < n; ++i) {
+		for (int j = i + 1; j < n; ++j) {
+			minD = min(minD, dist(p[i], p[j]));
 		}
 	}
-	return min;
-}
-float closest_pair(Node nx[], Node ny[], int size) {
-	if (size <= 3) return bruteForce(size);
-	int mid = (size + 1) / 2;
-	Node midnode = nx[mid];
-
-	Node* nyl;
-	Node* nyr;
-	nyl = (Node*)malloc(sizeof(Node) * (mid + 1));
-	nyr = (Node*)malloc(sizeof(Node) * (size - mid + 1));
-	int li = 1, ri = 1;
-	for (int i = 1; i <= size; ++i) {
-		if (ny[i].x <= midnode.x)
-			nyl[li++] = ny[i];
-		else
-			nyr[ri++] = ny[i];
-	}
-	float dl = closest_pair(nx, nyl, mid);
-	float dr = closest_pair(nx + mid, nyr, size - mid);
-
-	float minD = minNum(dl, dr);
-
-	Node* strip;
-
-	strip = (Node*)malloc(sizeof(Node) * (size + 1));
-	int j = 1;
-	for (int i = 1; i <= size; ++i) {
-		if (abs(nx[i].x - midnode.x) < minD)
-			strip[j] = nx[i], j++;
-	}
-	return minNum(minD, stripClosest(strip, j, minD));
+	return minD;
 }
 
-float closest() {
-	Node* nx, *ny;
-	nx = (Node*)malloc(sizeof(Node) * (n + 1));
-	ny = (Node*)malloc(sizeof(Node) * (n + 1));
-	for (int i = 1; i <= n; ++i) {
-		nx[i] = node[i];
-		ny[i] = node[i];
-	}
-	qsort(nx, n + 1, sizeof(Node), compareX);
-	qsort(ny, n + 1, sizeof(Node), compareY);
+float stripDist(Point strip[], int size, float minD) { 
+	float minDist = minD;
 
-	return closest_pair(nx, ny, n);
+	for (int i = 0; i < size; ++i) {
+		for (int j = i + 1; j < size, strip[j] - strip[i] < minD; ++j)
+			minDist = min(minDist, dist(strip[i], strip[j]));
+	}
+	return minDist;
+}
+float c_pair(Point p[], int q1, int q2) {
+	if (q2 - q1 <= 3)
+		return bruteforce(p, q1, q2);
+	int mid = (q1 + q2) / 2;
+
+	float dl = c_pair(p, q1, mid);
+	float dr = c_pair(p, mid, q2);
+
+	float minD = min(dl, dr);
+
+	int j = 0;
+	for (int i = 0; i < n; ++i) {
+		if (abs(p[mid] - p[i]) < minD) {
+			strip[j] = p[i];
+			j++;
+		}
+	}
+	return min(minD, stripDist(strip, j, minD));
 }
 int main()
 {
-	scanf("%d", &n);
-	if (n == 0) {
-		printf("You have to input more than Zero.");
-		exit(1);
+
+	for (int i = 0; i < n; ++i) {
+		scanf("%f %f", &p[i].x, &p[i].y);
 	}
-	node = (Node*)malloc(sizeof(Node) * (n + 1));
-	for (int i = 1; i <= n; ++i) {
-		scanf("%d %d", &node[i].x, &node[i].y);
-	}
-	float ans = closest();
-	if (ans < 10000)
-		printf("%.2f\n", ans);
-	else printf("Infinity\n");
+
+	qsort(p, n, compareX);
+	printf("%f", c_pair(p, 0, n - 1);
 }
