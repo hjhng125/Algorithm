@@ -17,6 +17,8 @@ void bfs(int s) {
 	while (!q.empty()) {
 
 		int size = q.size();
+		(flag == 1) ? flag = 2 : flag = 1;
+		for (int i = 1; i <= size; ++i) {
 		
 			int cur = q.front(); q.pop();
 			for (int next : adj[cur]) {
