@@ -2,14 +2,12 @@
 #include<vector>
 #include<cmath>
 #include<queue>
-#include<algorithm>
 #include<limits>
 
 using namespace std;
 
 typedef struct NODE {
 	int x, y, curBeer;
-	double distance;
 }Node;
 int t, n;
 bool visit[101];
@@ -23,7 +21,6 @@ bool bfs(vector<Node> adj) {
 	visit[0] = true;
 	while (!q.empty()) {
 		Node cur = q.front(); q.pop();
-		cur.distance = 0.0;
 		cur.curBeer = 20;
 
 		if (cur.x == adj[n + 1].x && cur.y == adj[n + 1].y) return true;
@@ -44,14 +41,9 @@ int main()
 		
 		vector<Node> adj(n + 2);
 		fill(visit + 0, visit + (n + 2), 0);
-		scanf("%d %d", &adj[0].x, &adj[0].y);
-		adj[0].curBeer = 20;
-		for (int i = 1; i <= n; ++i) 
+		for (int i = 0; i <= n+1; ++i) 
 			scanf("%d %d", &adj[i].x, &adj[i].y);
-		scanf("%d %d", &adj[n + 1].x, &adj[n + 1].y);
-
-		if (!bfs(adj)) printf("sad\n");
-		else printf("happy\n");
-		
+	
+		printf(bfs(adj) == false ? "sad\n" : "happy\n");		
 	}
 }
