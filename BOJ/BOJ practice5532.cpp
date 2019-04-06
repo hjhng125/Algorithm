@@ -14,5 +14,3 @@ int main() {
         result1 = result2;
     cout << l - ceil(result1);
 }
-
-
