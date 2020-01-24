@@ -25,3 +25,4 @@ b = list(map(int, input().split()))
 
 V = Value(n, a, b)
 print(V.solve())
+
